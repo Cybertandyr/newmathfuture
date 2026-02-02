@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Math.Future — КРИТ 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+margin:0;
+font-family:Segoe UI,Arial;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:#e5e7eb;
+}
+header{
+text-align:center;
+padding:30px;
+}
+h1{
+font-size:3em;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.banner{
+text-align:center;
+color:#fde68a;
+margin-bottom:20px;
+}
+main{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+section{
+background:#020617;
+border:1px solid #1e293b;
+border-radius:16px;
+padding:20px;
+margin-bottom:20px;
+}
+button{
+padding:10px 16px;
+border-radius:10px;
+border:none;
+margin:5px;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+color:white;
+cursor:pointer;
+}
+input{
+padding:8px;
+border-radius:8px;
+border:1px solid #1e293b;
+background:#020617;
+color:white;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+td,th{
+border:1px solid #334155;
+padding:6px;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Math.Future</h1>
+<p>Образовательная платформа</p>
+</header>
+
+<div class="banner">
+Участник конкурса «КРИТ-2026» Исламов Кадыр приветствует жюри конкурса!
+</div>
+
+<main>
+
+<section>
+<h2>📚 Темы</h2>
+<button onclick="loadTopic('quadratic')">Квадратные уравнения</button>
+<button onclick="loadTopic('linear')">Линейные уравнения</button>
+<button onclick="loadTopic('systems')">Системы уравнений</button>
+<button onclick="loadTopic('progressions')">Прогрессии</button>
+
+</section>
+
+<section>
+<h2>📘 Теория</h2>
+<div id="theory">Выберите тему</div>
+</section>
+
+<section>
+<h2>✏️ Практика</h2>
+<div id="practice"></div>
+</section>
+
+<section>
+<h2>🧪 Тест</h2>
+<div id="test"></div>
+</section>
+
+<section id="examSection" style="display:none;">
+<h2>📝 Экзамен</h2>
+<div id="examTest"></div>
+</section>
+
+<section>
+<h2>🏆 Результаты</h2>
+<table>
+<thead>
+<tr><th>Попытка</th><th>Баллы</th></tr>
+</thead>
+<tbody id="results"></tbody>
+</table>
+</section>
+
+</main>
+
+<script>
+const theory = document.getElementById("theory");
+const practice = document.getElementById("practice");
+const test = document.getElementById("test");
+const examSection = document.getElementById("examSection");
+const examTest = document.getElementById("examTest");
+const results = document.getElementById("results");
+
+let A,B,C,D,X1,X2,Y1,Y2,dx,dn;
+let attempt = 0;
+let currentTopic = '';
+let questions = [];
+
+
+function loadTopic(topic){
+  currentTopic = topic;
+  examSection.style.display='none';
+  switch(topic){
+    case 'quadratic': loadQuadratic(); break;
+    case 'linear': loadLinear(); break;
+    case 'systems': loadSystems(); break;
+    case 'progressions': loadProgressions(); break;
+  }
+}
+
+
+function loadQuadratic(){
+theory.innerHTML = `
+<p><b>Квадратное уравнение:</b> ax² + bx + c = 0</p>
+<p><b>Дискриминант:</b> D = b² − 4ac</p>
+<p>Если D &gt; 0: два корня</p>
+<p>Если D = 0: один корень</p>
+<p>Если D &lt; 0: корней нет</p>
+`;
+practice.innerHTML = `
+<button onclick="genQuadratic()">🎲 Случайное уравнение</button>
+<p id="eq"></p>
+x₁ <input id="x1"> 
+x₂ <input id="x2"><br>
+<button onclick="checkQuadratic()">Проверить</button>
+<button onclick="noRootsQuadratic()">Корней нет</button>
+<button onclick="solveQuadratic()">Решение</button>
+<p id="out"></p>
+`;
+questions = [
+  {q:"Сколько корней у уравнения при D<0?", options:["0","1","2"], answer:"0"},
+  {q:"Если D=0, сколько корней?", options:["0","1","2"], answer:"1"},
+  {q:"Если D>0, сколько корней?", options:["0","1","2"], answer:"2"},
+  {q:"Дискриминант равен b²−4ac. Верно?", options:["Да","Нет"], answer:"Да"},
+  {q:"Что из перечисленного является квадратным уравнением?", options:["x²+2x+1=0","2x+3=0"], answer:"x²+2x+1=0"}
+];
+renderTest();
+}
+
+function genQuadratic(){A = Math.floor(Math.random()*5)+1; B = Math.floor(Math.random()*11)-5; C = Math.floor(Math.random()*11)-5;
+document.getElementById("eq").textContent = `${A}x² ${B<0?"-":"+"} ${Math.abs(B)}x ${C<0?"-":"+"} ${Math.abs(C)} = 0`;
+D = B*B - 4*A*C; if(D>=0){X1=(-B+Math.sqrt(D))/(2*A); X2=(-B-Math.sqrt(D))/(2*A);} document.getElementById("out").textContent="";}
+function checkQuadratic(){if(D<0){document.getElementById("out").textContent="Корней нет"; return;} const u1=+document.getElementById("x1").value; const u2=+document.getElementById("x2").value; document.getElementById("out").textContent=(Math.abs(u1-X1)<0.1 || Math.abs(u2-X2)<0.1)?"Верно":"Неверно";}
+function noRootsQuadratic(){document.getElementById("out").textContent = D<0?"Верно":"Неверно";}
+function solveQuadratic(){document.getElementById("out").textContent=D<0?"Корней нет":`x₁=${X1.toFixed(2)}, x₂=${X2.toFixed(2)}`;}
+
+
+function loadLinear(){theory.innerHTML="<p><b>Линейное уравнение:</b> ax + b = 0<br>Решение: x = -b / a</p>";
+practice.innerHTML = `<button onclick="genLinear()">🎲 Случайное линейное уравнение</button><p id="eq"></p>x <input id="x"><br><button onclick="checkLinear()">Проверить</button><button onclick="solveLinear()">Решение</button><p id="out"></p>`;
+questions = [
+  {q:"Сколько корней у линейного уравнения ax+b=0 при a≠0?", options:["0","1","∞"], answer:"1"},
+  {q:"Если a=0 и b≠0, сколько корней?", options:["0","1","∞"], answer:"0"},
+  {q:"Если a=0 и b=0, сколько корней?", options:["0","1","∞"], answer:"∞"}
+];
+renderTest();
+}
+function genLinear(){A=Math.floor(Math.random()*10)+1; B=Math.floor(Math.random()*21)-10; document.getElementById("eq").textContent=`${A}x ${B<0?"-":"+"} ${Math.abs(B)} = 0`; X1=-B/A; document.getElementById("out").textContent="";}
+function checkLinear(){const u=+document.getElementById("x").value; document.getElementById("out").textContent=Math.abs(u-X1)<0.1?"Верно":"Неверно";}
+function solveLinear(){document.getElementById("out").textContent=`x=${X1.toFixed(2)}`;}
+
+
+function loadSystems(){
+theory.innerHTML="<p><b>Системы уравнений:</b><br>Пример: x + y = 5, 2x - y = 1</p>";
+practice.innerHTML = `<button onclick="genSystem()">🎲 Случайная система</button>
+<p id="eq"></p>x <input id="x"> y <input id="y"><br>
+<button onclick="checkSystem()">Проверить</button>
+<button onclick="solveSystem()">Решение</button>
+<p id="out"></p>`;
+questions = [
+  {q:"Сколько решений имеет система с параллельными прямыми?", options:["0","1","∞"], answer:"0"},
+  {q:"Сколько решений имеет система с пересечением?", options:["0","1","∞"], answer:"1"}
+];
+renderTest();
+}
+function genSystem(){
+A=Math.floor(Math.random()*5)+1; B=Math.floor(Math.random()*5)+1;
+C=Math.floor(Math.random()*11)-5; D=Math.floor(Math.random()*5)+1; E=Math.floor(Math.random()*5)+1; F=Math.floor(Math.random()*11)-5;
+const det=A*E-B*D; 
+X1=(C*E-B*F)/det; Y1=(A*F-C*D)/det;
+document.getElementById("eq").textContent=`${A}x + ${B}y = ${C}, ${D}x + ${E}y = ${F}`;
+document.getElementById("out").textContent="";
+}
+function checkSystem(){const u=+document.getElementById("x").value; const v=+document.getElementById("y").value;
+document.getElementById("out").textContent=(Math.abs(u-X1)<0.1 && Math.abs(v-Y1)<0.1)?"Верно":"Неверно";}
+function solveSystem(){document.getElementById("out").textContent=`x=${X1.toFixed(2)}, y=${Y1.toFixed(2)}`;}
+
+
+function loadProgressions(){
+theory.innerHTML="<p><b>Арифметическая прогрессия:</b><br>a_n = a1 + (n-1)d</p>";
+practice.innerHTML = `<button onclick="genProgression()">🎲 Случайная прогрессия</button>
+<p id="eq"></p>Пропущенный член: <input id="x"><br>
+<button onclick="checkProgression()">Проверить</button>
+<button onclick="solveProgression()">Решение</button>
+<p id="out"></p>`;
+questions = [
+  {q:"Сколько членов в арифметической прогрессии до n?", options:["n","n-1","n+1"], answer:"n"},
+  {q:"Сумма n членов арифметической прогрессии?", options:["S_n = n(a1+an)/2","S_n = a1+an","S_n = n*a1"], answer:"S_n = n(a1+an)/2"}
+];
+renderTest();
+}
+function genProgression(){let a1=Math.floor(Math.random()*10)+1; let d=Math.floor(Math.random()*5)+1; dn=Math.floor(Math.random()*5)+2;
+dx=a1+(dn-1)*d; let arr=[]; for(let i=1;i<=dn;i++){arr.push(a1+(i-1)*d);} let missing=Math.floor(Math.random()*dn); dx=arr[missing]; arr[missing]='?'; document.getElementById("eq").textContent=arr.join(", "); document.getElementById("out").textContent="";}
+function checkProgression(){const u=+document.getElementById("x").value; document.getElementById("out").textContent=(u===dx)?"Верно":"Неверно";}
+function solveProgression(){document.getElementById("out").textContent=`Пропущенный член: ${dx}`;}
+
+
+function renderTest(){let html=''; questions.forEach((t,i)=>{html+=`<p>${i+1}. ${t.q}</p>`; t.options.forEach(o=>{html+=`<label><input type="radio" name="q${i}" value="${o}"> ${o}</label><br>`;});}); html+=`<button onclick="checkTest()">Завершить тест</button><p id="score"></p>`; test.innerHTML=html;}
+
+function checkTest(){let score=0; questions.forEach((t,i)=>{const r=document.querySelector(`input[name="q${i}"]:checked`); if(r && r.value===t.answer) score++;}); document.getElementById("score").textContent=`Баллы: ${score} / ${questions.length}`; attempt++; results.innerHTML+=`<tr><td>${attempt}</td><td>${score} / ${questions.length}</td></tr>`;}
+
+function startExam(){examSection.style.display='block'; examTest.innerHTML=test.innerHTML;}
+</script>
+
+</body>
+</html>
